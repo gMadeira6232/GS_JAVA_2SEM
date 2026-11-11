@@ -43,6 +43,7 @@ public class CidadeChuva {
         int[][] lamina = gerarMatriz(gerador, n, m, 0, 10);
         int[][] laminaInicial = copiar(lamina);
         int[][] laminaD1 = copiar(laminaInicial);
+        int[][] laminaD2 = copiar(laminaInicial);
         int[] deslocamentoLinha = criarDeslocamentoLinha(ordem);
         int[] deslocamentoColuna = criarDeslocamentoColuna(ordem);
 
@@ -57,16 +58,16 @@ public class CidadeChuva {
         //Simulação dos ciclos e alertas
         boolean[][] alertasJaEmitidos = new boolean[lamina.length][lamina[0].length];
 
-        for (int ciclo = 0; ciclo < k; ciclo++) {
+        for (int ciclo = 1; ciclo <= k; ciclo++) {
             int totalAntes = somar(lamina);
 
             lamina = simularPasso(altitude, lamina, deslocamentoLinha, deslocamentoColuna);
 
-            if (ciclo == 0) {
+            if (ciclo == 1) {
                 imprimir(lamina, "\nPrimeiro Ciclo");
             }
 
-            System.out.println("\n========== CICLO " + (ciclo + 1) + " ==========");
+            System.out.println("\n========== CICLO " + (ciclo) + " ==========");
             System.out.println("Total antes: " + totalAntes);
 
             boolean[][] alertaCiclo = marcarAlerta(lamina, l);
@@ -75,7 +76,7 @@ public class CidadeChuva {
                 for (int j = 0; j < alertaCiclo[i].length; j++) {
                     if (alertaCiclo[i][j] == true && alertasJaEmitidos[i][j] == false) {
                         alertasJaEmitidos[i][j] = true;
-                        System.out.println("ALERTA! Ciclo " + (ciclo + 1) + " - Célula " + "[" + i + "]" + "[" + j + "]" + " atingiu o limite.");
+                        System.out.println("ALERTA! Ciclo " + (ciclo) + " - Célula " + "[" + i + "]" + "[" + j + "]" + " atingiu o limite.");
                     }
                 }
             }
@@ -83,10 +84,11 @@ public class CidadeChuva {
             int totalDepois = somar(lamina);
             System.out.println("Total Depois: " + totalDepois);
 
+            //DUVIDA D1, D2
             if (ciclo == 2) {
                 laminaD1 = copiar(lamina);
             }
-            if (ciclo == k - 1) {
+            if (ciclo == k) {
                 imprimir(lamina, "\nÚltimo Ciclo");
             }
         }
@@ -111,14 +113,20 @@ public class CidadeChuva {
         //Simulação ingênua e D1/D2
         int[][] laminaIngenua = copiar(laminaInicial);
 
-        for (int i = 0; i < 3; i++) {
+
+        for (int ciclo = 1; ciclo <= 3; ciclo++) {
             laminaIngenua = simularPassoIngenuo(altitude, laminaIngenua, deslocamentoLinha, deslocamentoColuna);
+
+            //DUVIDA D1, D2
+            if (ciclo == 2) {
+                laminaD2 = copiar(laminaIngenua);
+            }
         }
 
         int linhaD1D2 = rmEquipe % n;
         int colunaD1D2 = (rmEquipe / 7) % m;
         int d1 = laminaD1[linhaD1D2][colunaD1D2];
-        int d2 = laminaIngenua[linhaD1D2][colunaD1D2];
+        int d2 = laminaD2[linhaD1D2][colunaD1D2];
 
 
 
@@ -136,7 +144,7 @@ public class CidadeChuva {
                 "\nD1=" + d1 + " D2=" + d2);
     }
 
-    //METODO RESPONSAVEL POR RECEBER O RM DOS INTEGRANTES DA EQUIPE, REALIZAR O CALCULO COM O FOR PERCORRENDO TODOS OS INDICES E RETORNAR A SOMA DE TODOS OS RMS.
+    //METODO RESPONSAVEL POR RECEBER O RM DOS INTEGRANTES DA EQUIPE, REALIZAR O CALCULO COM O FOR PERCORRENDO TODOS OS INDICES E RETORNAR A SOMA DE TODOS OS RMS PARA REALIZAR O CALCULO DOS PARAMETROS.
     static int calcularRmEquipe(int[] rms) {
         int soma = 0;
         for (int i = 0; i < rms.length; i++) {
@@ -145,7 +153,7 @@ public class CidadeChuva {
         return soma;
     }
 
-    //METODO RESPONSAVEL PELO CALCULO DOS PARAMETROS COM BASE NO RM DA EQUIPE, RETORNA EM UM VETOR COM OS INDICES DE 0 A 4 OS PARAMETROS n, m, k, l E ordem.
+    //METODO RESPONSAVEL PELO CALCULO DOS PARAMETROS COM BASE NO RM DA EQUIPE, RETORNA EM UM VETOR COM OS INDICES DE 0 A 4 OS PARAMETROS n, m, k, l E ordem. NECESSARIO PARA DETERMINAR TAMANHO DAS MATRIZES, QUANTIDADE DE CICLOS, LIMIAR DE ALERTA E ORDEM DOS VIZINHOS.
     static int[] calcularParametros(int rm) {
         int[] parametros = new int[5];
         parametros[0] = 8 + rm % 3;
@@ -190,7 +198,7 @@ public class CidadeChuva {
         }
     }
 
-    //METODO RESPONSAVEL POR SOMAR TODOS OS ELEMENTOS DE UMA MATRIZ, PERCORRE TODAS AS LINHAS E COLUNAS, E RETORNA O RESULTADO DA SOMA.
+    //METODO RESPONSAVEL POR SOMAR TODOS OS ELEMENTOS DE UMA MATRIZ, PERCORRE TODAS AS LINHAS E COLUNAS, E RETORNA O RESULTADO DA SOMA. UTILIZADO PARA VERIFICAR O TOTAL DE AGUA DA LAMINA, ANTES E DEPOIS DE CADA CICLO.
     static int somar(int[][] matriz) {
         int soma = 0;
         for (int i = 0; i < matriz.length; i++) {
