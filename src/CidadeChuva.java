@@ -49,9 +49,17 @@ public class CidadeChuva {
 
 
 
-        //Impressão das matrizes iniciais
-        imprimir(altitude, "\nAltitude (cm)");
-        imprimir(lamina, "\nLâmina (cm)");
+        //Impressão dos parametros e matrizes iniciais
+        System.out.println(
+                "\nRM da equipe: " + rmEquipe +
+                "\nN: " + n +
+                "\nM: " + m +
+                "\nK: " + k +
+                "\nL: " + l +
+                "\nOrdem: " + ordem);
+
+        imprimir(altitude, "\nAltitude (cm):");
+        imprimir(lamina, "\nLâmina (cm):");
 
 
 
@@ -62,10 +70,6 @@ public class CidadeChuva {
             int totalAntes = somar(lamina);
 
             lamina = simularPasso(altitude, lamina, deslocamentoLinha, deslocamentoColuna);
-
-            if (ciclo == 1) {
-                imprimir(lamina, "\nPrimeiro Ciclo");
-            }
 
             System.out.println("\n========== CICLO " + (ciclo) + " ==========");
             System.out.println("Total antes: " + totalAntes);
@@ -84,12 +88,15 @@ public class CidadeChuva {
             int totalDepois = somar(lamina);
             System.out.println("Total Depois: " + totalDepois);
 
-            //DUVIDA D1, D2
-            if (ciclo == 2) {
+            if (ciclo == 1) {
+                imprimir(lamina, "\nPrimeiro Ciclo:");
+            }
+
+            if (ciclo == 3) {
                 laminaD1 = copiar(lamina);
             }
             if (ciclo == k) {
-                imprimir(lamina, "\nÚltimo Ciclo");
+                imprimir(lamina, "\nÚltimo Ciclo:");
             }
         }
 
@@ -99,7 +106,8 @@ public class CidadeChuva {
         boolean[][] alerta = marcarAlerta(lamina, l);
         int numeroAlerta = contarAlerta(alerta);
 
-        imprimirMapaAlerta(alerta, "\nMapa de alerta (# = alagado, . = normal):");
+        System.out.println("\nMapa de alerta (# = alagado, . = normal):");
+        imprimirMapaAlerta(alerta);
         System.out.println("Quantidade de células em alerta: " + numeroAlerta);
 
 
@@ -117,8 +125,7 @@ public class CidadeChuva {
         for (int ciclo = 1; ciclo <= 3; ciclo++) {
             laminaIngenua = simularPassoIngenuo(altitude, laminaIngenua, deslocamentoLinha, deslocamentoColuna);
 
-            //DUVIDA D1, D2
-            if (ciclo == 2) {
+            if (ciclo == 3) {
                 laminaD2 = copiar(laminaIngenua);
             }
         }
@@ -138,13 +145,14 @@ public class CidadeChuva {
         System.out.println("Linha crítica: " + linhaCritica + " (" + aguaPorLinha[linhaCritica] + " cm)");
 
 
-        System.out.println("\nRESUMO RM=" + rmEquipe +
+        System.out.println(
+                "\nRESUMO RM=" + rmEquipe +
                 "\nALERTA=" + numeroAlerta +
                 "\nCRITICA=" + linhaCritica + " AGUA=" + aguaPorLinha[linhaCritica] +
                 "\nD1=" + d1 + " D2=" + d2);
     }
 
-    //METODO RESPONSAVEL POR RECEBER O RM DOS INTEGRANTES DA EQUIPE, REALIZAR O CALCULO COM O FOR PERCORRENDO TODOS OS INDICES E RETORNAR A SOMA DE TODOS OS RMS PARA REALIZAR O CALCULO DOS PARAMETROS.
+    //metodo responsavel por receber o rm dos integrantes da equipe, realizar o calculo com o for percorrendo todos os indices e retornar a soma de todos os rms para realizar o calculo dos parametros.
     static int calcularRmEquipe(int[] rms) {
         int soma = 0;
         for (int i = 0; i < rms.length; i++) {
@@ -153,7 +161,7 @@ public class CidadeChuva {
         return soma;
     }
 
-    //METODO RESPONSAVEL PELO CALCULO DOS PARAMETROS COM BASE NO RM DA EQUIPE, RETORNA EM UM VETOR COM OS INDICES DE 0 A 4 OS PARAMETROS n, m, k, l E ordem. NECESSARIO PARA DETERMINAR TAMANHO DAS MATRIZES, QUANTIDADE DE CICLOS, LIMIAR DE ALERTA E ORDEM DOS VIZINHOS.
+    //metodo responsavel pelo calculo dos parametros com base no rm da equipe, retorna em um vetor com os indices de 0 a 4 os parametros n, m, k, l e ordem. necessario para determinar tamanho das matrizes, quantidade de ciclos, limiar de alerta e ordem dos vizinhos.
     static int[] calcularParametros(int rm) {
         int[] parametros = new int[5];
         parametros[0] = 8 + rm % 3;
@@ -164,7 +172,7 @@ public class CidadeChuva {
         return parametros;
     }
 
-    //METODO RESPONSAVEL POR GERAR A MATRIZ DE ALTITUDE, RECEBE O ARGUMENTO gerador ALEM DOS PARAMETROS n E m, APLICA A FORMULA FORNECIDA E RETORNA A MATRIZ altitude PREENCHIDA.
+    //metodo responsavel por gerar a matriz de altitude, recebe o argumento gerador alem dos parametros n e m, aplica a formula fornecida e retorna a matriz altitude preenchida.
     static int[][] gerarAltitude(Random gerador, int n, int m) {
         int[][] altitude = new int[n][m];
         for (int i = 0; i < n; i++){
@@ -175,7 +183,7 @@ public class CidadeChuva {
         return altitude;
     }
 
-    //METODO RESPONSAVEL POR GERAR UMA MATRIZ ALEATORIA, RECEBE OS PARAMETROS n E m TAMBEM RECEBE OS ARGUMENTOS gerador, minimo e maximo QUE DEFINEM O INTERVALO DOS VALORES ALEATORIOS. APLICA A FORMULA FORNECIDA E RETORNA A MATRIZ PREENCHIDA.
+    //metodo responsavel por gerar uma matriz aleatoria, recebe os parametros n e m, tambem recebe os argumentos gerador, minimo e maximo que definem o intervalo dos valores aleatorios. aplica a formula fornecida e retorna a matriz preenchida.
     static int[][] gerarMatriz(Random gerador, int n, int m, int minimo, int maximo) {
         int[][] matriz = new int[n][m];
         for (int i = 0; i < n; i++) {
@@ -186,7 +194,7 @@ public class CidadeChuva {
         return matriz;
     }
 
-    //METODO RESPONSAVEL POR REALIZAR A IMPRESSÃO DAS MATRIZES, RECEBE DOIS ARGUMENTOS DIFERENTES EM CADA CHAMADA, A CHAMADA ENVIA A MATRIZ E SEU RESPECTIVO TITULO.
+    //metodo responsavel por realizar a impressao das matrizes, recebe dois argumentos diferentes em cada chamada, a chamada envia a matriz e seu respectivo titulo.
     static void imprimir(int[][] matriz, String titulo) {
         System.out.println(titulo);
         for (int i = 0; i < matriz.length; i++) {
@@ -198,7 +206,7 @@ public class CidadeChuva {
         }
     }
 
-    //METODO RESPONSAVEL POR SOMAR TODOS OS ELEMENTOS DE UMA MATRIZ, PERCORRE TODAS AS LINHAS E COLUNAS, E RETORNA O RESULTADO DA SOMA. UTILIZADO PARA VERIFICAR O TOTAL DE AGUA DA LAMINA, ANTES E DEPOIS DE CADA CICLO.
+    //metodo responsavel por somar todos os elementos de uma matriz, percorre todas as linhas e colunas, e retorna o resultado da soma. utilizado para verificar o total de agua da lamina, antes e depois de cada ciclo.
     static int somar(int[][] matriz) {
         int soma = 0;
         for (int i = 0; i < matriz.length; i++) {
@@ -209,7 +217,7 @@ public class CidadeChuva {
         return soma;
     }
 
-    //METODO
+    //metodo responsavel por realizar a copia de uma matriz já existente e retornar na matriz copia. utilizado para realizar a fotografia da matriz em um determinado ciclo da simulaçao.
     static int[][] copiar(int[][] matriz) {
         int[][] copia = new int[matriz.length][matriz[0].length];
         for (int i = 0; i < matriz.length; i++) {
@@ -220,7 +228,7 @@ public class CidadeChuva {
         return copia;
     }
 
-    //METODO
+    //metodo utilizado para checar se as posicoes i, j estao dentro da matriz com base em seus parametros. retorna true ou false.
     static boolean dentro(int i, int j, int n, int m) {
         if (i >= 0 && i < n && j >= 0 && j < m) {
             return true;
@@ -229,7 +237,7 @@ public class CidadeChuva {
         }
     }
 
-    //METODO
+    //metodo responsavel por criar o vetor de deslocamento das linhas com base na ordem definida pelo rm da equipe. retorna o vetor deslocamentoLinha.
     static int[] criarDeslocamentoLinha(int ordem) {
         int[] deslocamentoLinha = new int[4];
         if (ordem == 0) {
@@ -246,7 +254,7 @@ public class CidadeChuva {
         return deslocamentoLinha;
     }
 
-    //METODO
+    //metodo responsavel por criar o vetor de deslocamento das colunas com base na ordem definida pelo rm da equipe. retorna o vetor deslocamentoColuna.
     static int[] criarDeslocamentoColuna(int ordem) {
         int[] deslocamentoColuna = new int[4];
         if (ordem == 0) {
@@ -263,7 +271,7 @@ public class CidadeChuva {
         return deslocamentoColuna;
     }
 
-    //METODO
+    //metodo responsavel por realizar um ciclo de simulaçao e retornar a nova matriz atualizada da lamina de agua. utilizado para simular multiplos ciclos posteriormente com o auxilio de um for.
     static int[][] simularPasso(
             int[][] altitude,
             int[][] lamina,
@@ -300,7 +308,7 @@ public class CidadeChuva {
         return nova;
     }
 
-    //METODO
+    //metodo responsavel por marcar as celulas atingindo o limiarAlerta. o valor passado em limiarAlerta é o parametro l da equipe. retorna uma matriz boolean com cada posiçao true se lamina for maior ou igual ao limiarAlerta e false se for menor.
     static boolean[][] marcarAlerta(int[][] lamina, int limiarAlerta) {
         boolean[][] alerta = new boolean[lamina.length][lamina[0].length];
         for (int i = 0; i < lamina.length; i++) {
@@ -315,7 +323,7 @@ public class CidadeChuva {
         return alerta;
     }
 
-    //METODO
+    //metodo responsavel por contar a quantidade de celulas em alerta. retorna a quantidade de alertas na variavel contador.
     static int contarAlerta(boolean[][] alerta){
         int contador = 0;
         for (int i = 0; i < alerta.length; i++) {
@@ -328,9 +336,8 @@ public class CidadeChuva {
         return contador;
     }
 
-    //METODO
-    static void imprimirMapaAlerta(boolean[][] alerta, String titulo) {
-        System.out.println(titulo);
+    //metodo responsavel pela impressão da matriz de alerta. recebe as celulas em alerta e imprime no formato de mapa com os simbolos . e #.
+    static void imprimirMapaAlerta(boolean[][] alerta) {
         for (int i = 0; i < alerta.length; i++) {
             String linha = "";
             for (int j = 0; j < alerta[i].length; j++) {
@@ -344,7 +351,7 @@ public class CidadeChuva {
         }
     }
 
-    //METODO
+    //metodo responsavel por realizar o calculo da quantidade de agua por linha. retorna o vetor aguaPorLinha preenchido com o total de agua de cada linha.
     static int[] calcularAguaPorLinha(int[][] lamina) {
         int[] aguaPorLinha = new int[lamina.length];
         for (int i = 0; i < lamina.length; i++) {
@@ -357,7 +364,7 @@ public class CidadeChuva {
         return aguaPorLinha;
     }
 
-    //METODO
+    //metodo responsavel por encontrar no vetor aguaPorLinha o indice da linha com a maior quantidade de agua. retorna esse indice na variavel linhaCritica.
     static int encontrarLinhaCritica(int[] aguaPorLinha) {
         int linhaCritica = 0;
         int maiorAgua = aguaPorLinha[0];
@@ -370,7 +377,7 @@ public class CidadeChuva {
         return linhaCritica;
     }
 
-    //METODO
+    //metodo responsavel por realizar uma simulaçao "errada" do ciclo, que altera a propria matriz. utilizado posteriormente para comparaçao com a forma "correta" da simulaçao. retorna a propria matriz lamina modificada.
     static int[][] simularPassoIngenuo(
             int[][] altitude,
             int[][] lamina,
