@@ -2,7 +2,7 @@ import java.util.Scanner;
 import java.util.Random;
 
 public class CidadeChuva {
-    static void main() {
+    public static void main(String[] args) {
 
         //Entrada dos integrantes e cálculo do RM
         Scanner sc = new Scanner(System.in);
